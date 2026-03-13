@@ -11,6 +11,13 @@ This package implements a systematic intraday futures strategy for **MYM, MES, M
 - `backtester.py`: historical simulation with trade outcome logic and performance metrics.
 - `example_usage.py`: synthetic data demo showing decisioning and backtest output.
 
+## Dependencies
+
+- Python 3.10+
+- `pandas`
+
+Install dependencies in your environment before running the demo.
+
 ## Run Example
 
 ```bash

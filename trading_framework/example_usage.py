@@ -2,17 +2,11 @@
 
 from __future__ import annotations
 
+import importlib.util
 import random
-import pandas as pd
-
-from trading_framework.backtester import IntradayBacktester
-from trading_framework.data_loader import compute_session_levels, resample_timeframe
-from trading_framework.execution_engine import RiskManager
-from trading_framework.indicators import add_indicators
-from trading_framework.strategy import IntradayFuturesStrategy, compute_index_correlation
 
 
-def make_sample_data(start: str = "2025-01-06 00:00:00+00:00", periods: int = 60 * 24 * 4) -> pd.DataFrame:
+def make_sample_data(pd, start: str = "2025-01-06 00:00:00+00:00", periods: int = 60 * 24 * 4):
     """Generate synthetic 1-minute OHLCV data for demos/tests."""
     idx = pd.date_range(start, periods=periods, freq="1min", tz="UTC")
 
@@ -51,8 +45,23 @@ def make_sample_data(start: str = "2025-01-06 00:00:00+00:00", periods: int = 60
 
 
 def run_demo() -> None:
+    if importlib.util.find_spec("pandas") is None:
+        print(
+            "Cannot run trading demo: dependency 'pandas' is not installed. "
+            "Install requirements and re-run: python -m trading_framework.example_usage"
+        )
+        return
+
+    import pandas as pd
+
+    from trading_framework.backtester import IntradayBacktester
+    from trading_framework.data_loader import compute_session_levels, resample_timeframe
+    from trading_framework.execution_engine import RiskManager
+    from trading_framework.indicators import add_indicators
+    from trading_framework.strategy import IntradayFuturesStrategy, compute_index_correlation
+
     symbol = "MNQ"
-    df_1m = make_sample_data()
+    df_1m = make_sample_data(pd)
 
     data_1m = add_indicators(df_1m)
     data_5m = add_indicators(resample_timeframe(df_1m, "5min"))
